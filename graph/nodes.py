@@ -18,9 +18,8 @@ def retrieve_docs(state):
         "context": context,
         "sources": [
             {
-                "title": hit["entity"]["title"],
-                "source": hit["entity"]["source"],
-                "chunk_id": hit["entity"]["chunk_id"],
+                "document_name": hit["entity"]["document_name"],
+                "page_number": hit["entity"]["page_number"],
             }
             for hit in results
         ],
@@ -29,22 +28,22 @@ def retrieve_docs(state):
 
 def generate_answer(state):
 
-    prompt = f"""
-    You are a Command360 documentation assistant.
+    prompt = f"""You are a Command360 documentation assistant.
 
-    Rules:
-    1. Only answer from the supplied context.
-    2. Do not invent steps.
-    3. If evidence is missing say:
-    "I could not find evidence in the Command360 documentation."
-    4. At the end list the document titles used.
+Rules:
+1. Only answer using the supplied documentation.
+2. Do not invent steps.
+3. If insufficient evidence exists, say:
+   "I could not find evidence in the Command360 documentation."
+4. At the end include document name and page numbers used.
+5. Prefer procedural steps when available.
 
-    Context:
-    {state['context']}
+Context:
+{state['context']}
 
-    Question:
-    {state['question']}
-    """
+Question:
+{state['question']}
+"""
 
     response = ollama_client.generate(model="qwen2.5:7b", prompt=prompt)
 

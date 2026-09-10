@@ -1,33 +1,38 @@
+import hashlib
+
 from ollama import Client
 from pymilvus import MilvusClient
 
-from ingestion.load_documents import load_documents
-from ingestion.chunk_documents import chunk_documents
+from ingestion.pdf_loader import load_pdf_pages
+from ingestion.pdf_chunker import chunk_pages
 
 COLLECTION = "command360_docs"
+PDF_PATH = "documents/confluence/Command360_User_Guide.pdf"
 
-ollama_client = Client(
-    host="http://localhost:11434"
-)
+ollama_client = Client(host="http://localhost:11434")
 
-milvus_client = MilvusClient(
-    uri="http://localhost:19530"
-)
+milvus_client = MilvusClient(uri="http://localhost:19530")
+
+
+def make_id(document_name: str, page_number: int, chunk_id: str) -> int:
+
+    key = f"{document_name}*{page_number}*{chunk_id}"
+
+    digest = hashlib.md5(key.encode()).hexdigest()
+
+    # truncate to 63 bits so it fits INT64
+    return int(digest[:16], 16) & 0x7FFFFFFFFFFFFFFF
 
 
 def index_documents():
 
-    print("Loading documents...")
+    print("Loading PDF pages...")
 
-    documents = load_documents(
-        "documents/confluence"
-    )
+    pages = load_pdf_pages(PDF_PATH)
 
-    print(f"Loaded {len(documents)} documents")
+    print(f"Loaded {len(pages)} pages")
 
-    chunks = chunk_documents(
-        documents
-    )
+    chunks = chunk_pages(pages)
 
     print(f"Created {len(chunks)} chunks")
 
@@ -36,38 +41,28 @@ def index_documents():
     for idx, chunk in enumerate(chunks, start=1):
 
         embedding = ollama_client.embed(
-            model="nomic-embed-text",
-            input=chunk["text"]
+            model="nomic-embed-text", input=chunk["text"]
         ).embeddings[0]
 
         data.append(
             {
-                "id": idx,
+                "id": make_id(
+                    chunk["document_name"], chunk["page_number"], chunk["chunk_id"]
+                ),
                 "vector": embedding,
-                "title": chunk["title"],
-                "source": chunk["source"],
+                "document_name": chunk["document_name"],
+                "page_number": chunk["page_number"],
                 "chunk_id": chunk["chunk_id"],
-                "text": chunk["text"]
+                "text": chunk["text"],
             }
         )
 
-        print(
-            f"Embedded chunk {idx}/{len(chunks)}"
-        )
+        print(f"Embedded chunk {idx}/{len(chunks)}")
 
-        print(f"Prepared {len(data)} records")
+    # upsert keeps reindexing idempotent since chunk ids are deterministic
+    result = milvus_client.upsert(collection_name=COLLECTION, data=data)
 
-        print("\nSample record:")
-        print(data[0])
-
-    result = milvus_client.insert(
-        collection_name=COLLECTION,
-        data=data
-    )
-
-    print(
-        f"✅ Indexed {len(data)} chunks, result: {result}"
-    )
+    print(f"Indexed {len(data)} chunks, result: {result}")
 
 
 if __name__ == "__main__":
