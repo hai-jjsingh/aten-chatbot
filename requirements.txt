@@ -1,0 +1,13 @@
+flask
+
+langgraph
+langchain
+langchain-community
+
+pymilvus
+
+ollama
+
+beautifulsoup4
+python-dotenv
+pymupdf

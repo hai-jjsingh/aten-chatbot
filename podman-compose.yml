@@ -2,7 +2,6 @@ services:
 
   ollama:
     image: docker.io/ollama/ollama:latest
-
     container_name: ollama
 
     ports:
@@ -10,6 +9,54 @@ services:
 
     volumes:
       - ollama-data:/root/.ollama
+
+  etcd:
+    image: quay.io/coreos/etcd:v3.5.5
+    container_name: milvus-etcd
+
+    environment:
+      ETCD_AUTO_COMPACTION_MODE: revision
+      ETCD_AUTO_COMPACTION_RETENTION: "1000"
+      ETCD_QUOTA_BACKEND_BYTES: "4294967296"
+
+      ETCD_LISTEN_CLIENT_URLS: http://0.0.0.0:2379
+      ETCD_ADVERTISE_CLIENT_URLS: http://etcd:2379
+
+      ETCD_LISTEN_PEER_URLS: http://0.0.0.0:2380
+      ETCD_INITIAL_ADVERTISE_PEER_URLS: http://etcd:2380
+      ETCD_INITIAL_CLUSTER: default=http://etcd:2380
+
+  minio:
+    image: quay.io/minio/minio:latest
+    container_name: milvus-minio
+
+    command: minio server /minio_data
+
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+
+  milvus:
+    image: docker.io/milvusdb/milvus:v2.5.0
+    container_name: milvus
+    restart: unless-stopped
+
+    command:
+      - milvus
+      - run
+      - standalone
+
+    environment:
+      ETCD_ENDPOINTS: etcd:2379
+      MINIO_ADDRESS: minio:9000
+
+    depends_on:
+      - etcd
+      - minio
+
+    ports:
+      - "19530:19530"
+      - "9091:9091"
 
 volumes:
   ollama-data:
