@@ -1,26 +1,31 @@
 :root {
-  --bg: #0e0f11;
-  --bg-elevated: #1a1b1e;
-  --border: #2a2b2f;
-  --text: #e9e9ea;
-  --text-dim: #9a9ba1;
-  --accent: #6ea8fe;
-  --accent-soft: rgba(110, 168, 254, 0.12);
-  --bubble-user: #2b6cff;
-  --bubble-assistant: #1a1b1e;
+  /* HaiUI dark palette: background.default/paper, text.primary/secondary, divider, primary.main */
+  --bg: #1E1F21;
+  --bg-elevated: #33333C;
+  --border: #FFFFFF1F;
+  --text: #B9BACB;
+  --text-dim: #9595A1;
+  --accent: #1E6FF1;
+  --accent-soft: #1E6FF11F;
+  --accent-border: #1E6FF140;
+  --bubble-user: #1E6FF1;
+  --bubble-assistant: #33333C;
+  --error: #EA4645;
   --radius: 16px;
 }
 
 [data-theme="light"] {
-  --bg: #f7f7f8;
-  --bg-elevated: #ffffff;
-  --border: #e3e3e6;
-  --text: #1c1d1f;
-  --text-dim: #6b6c72;
-  --accent: #2b6cff;
-  --accent-soft: rgba(43, 108, 255, 0.08);
-  --bubble-user: #2b6cff;
-  --bubble-assistant: #ffffff;
+  /* HaiUI light palette: background.default/paper, text.primary/secondary, divider */
+  --bg: #D9D9D6;
+  --bg-elevated: #FFFFFF;
+  --border: #0000001F;
+  --text: #000000DE;
+  --text-dim: #00000099;
+  --accent: #1E6FF1;
+  --accent-soft: #1E6FF114;
+  --accent-border: #1E6FF140;
+  --bubble-user: #1E6FF1;
+  --bubble-assistant: #FFFFFF;
 }
 
 * {
@@ -35,8 +40,12 @@ body {
   margin: 0;
   background: var(--bg);
   color: var(--text);
-  font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;
-  transition: background-color 0.2s ease, color 0.2s ease;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu",
+    "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
 }
 
 .app {
@@ -67,11 +76,16 @@ body {
   gap: 8px;
 }
 
-.brand-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #6ea8fe, #b06efe);
+.brand-logo {
+  display: flex;
+  align-items: center;
+  color: var(--text);
+}
+
+.brand-logo svg {
+  height: 48px;
+  width: auto;
+  display: block;
 }
 
 .brand-name {
@@ -178,8 +192,8 @@ body {
 }
 
 .message.assistant .avatar {
-  background: linear-gradient(135deg, #6ea8fe, #b06efe);
-  color: #0e0f11;
+  background: linear-gradient(135deg, #1E6FF1, #5A9BFF);
+  color: #FFFFFF;
 }
 
 .bubble {
@@ -216,10 +230,11 @@ body {
 }
 
 .bubble code {
-  background: rgba(255, 255, 255, 0.08);
+  background: #FFFFFF14;
   padding: 1px 5px;
   border-radius: 4px;
   font-size: 13px;
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
 }
 
 .sources {
@@ -235,7 +250,7 @@ body {
   gap: 5px;
   background: var(--accent-soft);
   color: var(--accent);
-  border: 1px solid rgba(110, 168, 254, 0.25);
+  border: 1px solid var(--accent-border);
   border-radius: 999px;
   padding: 4px 10px;
   font-size: 12px;
@@ -270,7 +285,7 @@ body {
 }
 
 .error-text {
-  color: #ff8a8a;
+  color: var(--error);
 }
 
 .composer {
@@ -309,7 +324,7 @@ body {
   border-radius: 50%;
   border: none;
   background: var(--accent);
-  color: #0e0f11;
+  color: #FFFFFF;
   display: flex;
   align-items: center;
   justify-content: center;

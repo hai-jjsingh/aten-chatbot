@@ -108,6 +108,8 @@ services:
 
     volumes:
       - ./documents:/app/documents:ro
+      - ./app/static:/app/app/static
+      - ./app/templates:/app/app/templates
 
 volumes:
   ollama-data:

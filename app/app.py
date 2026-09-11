@@ -9,6 +9,9 @@ from graph.workflow import graph
 
 app = Flask(__name__)
 
+app.jinja_env.auto_reload = True
+app.jinja_env.cache = None
+
 
 @app.route("/")
 def index():

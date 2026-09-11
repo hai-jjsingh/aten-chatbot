@@ -5,6 +5,10 @@ from pymilvus import MilvusClient
 
 COLLECTION = "command360_docs"
 
+# Cosine similarity below this is treated as "not actually relevant" - measured
+# empirically: off-topic queries score ~0.43-0.46, genuine matches score ~0.67+.
+MIN_SCORE = 0.55
+
 ollama_client = Client(host=os.environ.get("OLLAMA_HOST", "http://localhost:11434"))
 
 milvus_client = MilvusClient(uri=os.environ.get("MILVUS_URI", "http://localhost:19530"))
@@ -33,4 +37,7 @@ def retrieve(query: str, limit: int = 5):
         output_fields=["document_name", "page_number", "chunk_id", "text"],
     )
 
-    return results[0]
+    # Milvus always returns the top-k nearest vectors even when nothing is
+    # actually relevant - drop weak matches so off-topic questions don't get
+    # fabricated citations.
+    return [hit for hit in results[0] if hit["distance"] >= MIN_SCORE]

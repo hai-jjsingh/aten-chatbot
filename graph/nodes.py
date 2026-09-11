@@ -28,7 +28,15 @@ def retrieve_docs(state):
     }
 
 
+NO_EVIDENCE_MESSAGE = "The query seems out of scope of the available documentation."
+
+
 def generate_answer(state):
+
+    # No relevant chunks survived the retrieval score threshold - skip the LLM
+    # call entirely rather than asking it to "ground" an answer in nothing.
+    if not state["context"].strip():
+        return {**state, "answer": NO_EVIDENCE_MESSAGE}
 
     prompt = f"""You are a Command360 documentation assistant.
 
@@ -36,7 +44,7 @@ Rules:
 1. Only answer using the supplied documentation.
 2. Do not invent steps.
 3. If insufficient evidence exists, say:
-   "I could not find evidence in the Command360 documentation."
+   "{NO_EVIDENCE_MESSAGE}"
 4. Prefer procedural steps when available.
 
 Context:
