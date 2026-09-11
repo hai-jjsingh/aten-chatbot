@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Command360 Assistant</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script>
+    // Apply saved/preferred theme before first paint to avoid a flash of the wrong theme.
+    (function () {
+      const saved = localStorage.getItem("theme");
+      const theme = saved || (window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark");
+      document.documentElement.setAttribute("data-theme", theme);
+    })();
+  </script>
+</head>
+<body>
+  <div class="app">
+    <header class="app-header">
+      <div class="header-row">
+        <div class="brand">
+          <span class="brand-dot"></span>
+          <span class="brand-name">Command360 Assistant</span>
+        </div>
+        <button type="button" id="theme-toggle" aria-label="Toggle dark/light mode">
+          <span class="icon icon-sun">☀️</span>
+          <span class="icon icon-moon">🌙</span>
+        </button>
+      </div>
+      <span class="brand-subtitle">Ask anything about the Command360 user guide</span>
+    </header>
+
+    <main class="chat" id="chat">
+      <div class="empty-state" id="empty-state">
+        <div class="empty-state-icon">💬</div>
+        <h1>How can I help you today?</h1>
+        <p>Ask a question about Command360 and get an answer with exact page citations.</p>
+      </div>
+    </main>
+
+    <footer class="composer">
+      <form id="composer-form" autocomplete="off">
+        <input
+          id="question-input"
+          type="text"
+          placeholder="Ask about Command360…"
+          autocomplete="off"
+        />
+        <button type="submit" id="send-btn" aria-label="Send">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none">
+            <path d="M3 11.5L21 3l-8.5 18-2.5-7.5L3 11.5z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </form>
+    </footer>
+  </div>
+
+  <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
