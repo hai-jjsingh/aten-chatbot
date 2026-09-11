@@ -1,8 +1,6 @@
 from vectorstore.retriever import retrieve
 
-results = retrieve(
-    "How do I update an expired certificate?"
-)
+results = retrieve("How do I update an expired certificate?")
 
 for i, hit in enumerate(results, start=1):
 
@@ -10,18 +8,10 @@ for i, hit in enumerate(results, start=1):
     print(f"Hit #{i}")
     print("===================")
 
-    print(
-        f"Score: {hit['distance']}"
-    )
+    print(f"Score: {hit['distance']}")
 
-    print(
-        f"Title: {hit['entity']['title']}"
-    )
+    print(f"{hit['entity']['document_name']} " f"Page {hit['entity']['page_number']}")
 
-    print(
-        f"Chunk: {hit['entity']['chunk_id']}"
-    )
+    print(f"Chunk: {hit['entity']['chunk_id']}")
 
-    print(
-        hit['entity']['text'][:300]
-    )
+    print(hit["entity"]["text"][:300])
