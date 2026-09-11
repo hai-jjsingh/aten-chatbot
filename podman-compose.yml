@@ -10,6 +10,13 @@ services:
     volumes:
       - ollama-data:/root/.ollama
 
+    healthcheck:
+      test: ["CMD", "ollama", "list"]
+      interval: 10s
+      timeout: 10s
+      retries: 12
+      start_period: 30s
+
   etcd:
     image: quay.io/coreos/etcd:v3.5.5
     container_name: milvus-etcd
@@ -26,6 +33,12 @@ services:
       ETCD_INITIAL_ADVERTISE_PEER_URLS: http://etcd:2380
       ETCD_INITIAL_CLUSTER: default=http://etcd:2380
 
+    healthcheck:
+      test: ["CMD", "etcdctl", "endpoint", "health"]
+      interval: 10s
+      timeout: 10s
+      retries: 12
+
   minio:
     image: quay.io/minio/minio:latest
     container_name: milvus-minio
@@ -35,6 +48,12 @@ services:
     environment:
       MINIO_ROOT_USER: minioadmin
       MINIO_ROOT_PASSWORD: minioadmin
+
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 10s
+      timeout: 10s
+      retries: 12
 
   milvus:
     image: docker.io/milvusdb/milvus:v2.5.0
@@ -51,12 +70,44 @@ services:
       MINIO_ADDRESS: minio:9000
 
     depends_on:
-      - etcd
-      - minio
+      etcd:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
 
     ports:
       - "19530:19530"
       - "9091:9091"
+
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9091/healthz"]
+      interval: 10s
+      timeout: 10s
+      retries: 12
+      start_period: 60s
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: command360-app
+
+    depends_on:
+      ollama:
+        condition: service_healthy
+      milvus:
+        condition: service_healthy
+
+    environment:
+      OLLAMA_HOST: http://ollama:11434
+      MILVUS_URI: http://milvus:19530
+      FLASK_DEBUG: "false"
+
+    ports:
+      - "5000:5000"
+
+    volumes:
+      - ./documents:/app/documents:ro
 
 volumes:
   ollama-data:

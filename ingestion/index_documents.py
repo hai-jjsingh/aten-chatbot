@@ -1,4 +1,5 @@
 import hashlib
+import os
 
 from ollama import Client
 from pymilvus import MilvusClient
@@ -7,11 +8,11 @@ from ingestion.pdf_loader import load_pdf_pages
 from ingestion.pdf_chunker import chunk_pages
 
 COLLECTION = "command360_docs"
-PDF_PATH = "documents/confluence/Command360_User_Guide.pdf"
+PDF_PATH = os.environ.get("PDF_PATH", "documents/confluence/Command360_User_Guide.pdf")
 
-ollama_client = Client(host="http://localhost:11434")
+ollama_client = Client(host=os.environ.get("OLLAMA_HOST", "http://localhost:11434"))
 
-milvus_client = MilvusClient(uri="http://localhost:19530")
+milvus_client = MilvusClient(uri=os.environ.get("MILVUS_URI", "http://localhost:19530"))
 
 
 def make_id(document_name: str, page_number: int, chunk_id: str) -> int:

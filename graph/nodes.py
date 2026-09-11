@@ -1,8 +1,10 @@
+import os
+
 from ollama import Client
 
 from vectorstore.retriever import retrieve
 
-ollama_client = Client(host="http://localhost:11434")
+ollama_client = Client(host=os.environ.get("OLLAMA_HOST", "http://localhost:11434"))
 
 
 def retrieve_docs(state):
