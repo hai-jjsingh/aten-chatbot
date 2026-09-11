@@ -28,7 +28,7 @@ function addMessage(role, contentHtml) {
 
   const avatar = document.createElement("div");
   avatar.className = "avatar";
-  avatar.textContent = role === "user" ? "U" : "AI";
+  avatar.textContent = role === "user" ? "👤" : "🤖";
 
   const bubble = document.createElement("div");
   bubble.className = "bubble";

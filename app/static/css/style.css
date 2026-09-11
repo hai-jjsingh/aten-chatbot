@@ -190,24 +190,12 @@ body {
 
 .avatar {
   flex-shrink: 0;
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
+  width: 48px;
+  height: 48px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 15px;
-  font-weight: 600;
-}
-
-.message.user .avatar {
-  background: var(--bubble-user);
-  color: #fff;
-}
-
-.message.assistant .avatar {
-  background: linear-gradient(135deg, #1E6FF1, #5A9BFF);
-  color: #FFFFFF;
+  font-size: 36px;
 }
 
 .bubble {
