@@ -108,6 +108,7 @@ body {
   border-radius: 50%;
   border: 1px solid var(--border);
   background: var(--bg-elevated);
+  color: var(--text);
   cursor: pointer;
   font-size: 15px;
   line-height: 1;
@@ -115,6 +116,13 @@ body {
 
 #theme-toggle .icon {
   display: none;
+}
+
+#theme-toggle .icon svg {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
+  display: block;
 }
 
 [data-theme="dark"] #theme-toggle .icon-sun {
@@ -142,12 +150,18 @@ body {
 }
 
 .empty-state-icon {
-  font-size: 32px;
   margin-bottom: 12px;
 }
 
+.empty-state-icon svg {
+  width: 40px;
+  height: 40px;
+  fill: var(--text-dim);
+}
+
 .empty-state h1 {
-  font-size: 22px;
+  font-size: 30px;
+  font-weight: 700;
   color: var(--text);
   margin: 0 0 8px;
 }
@@ -295,40 +309,63 @@ body {
 
 #composer-form {
   display: flex;
-  align-items: center;
-  gap: 10px;
+  flex-direction: column;
+  gap: 8px;
   background: var(--bg-elevated);
   border: 1px solid var(--border);
-  border-radius: 999px;
-  padding: 6px 6px 6px 18px;
+  border-radius: 20px;
+  padding: 14px 16px 10px;
 }
 
 #question-input {
-  flex: 1;
+  width: 100%;
   background: transparent;
   border: none;
   outline: none;
   color: var(--text);
   font-size: 15px;
-  padding: 10px 0;
+  padding: 4px 0 10px;
 }
 
 #question-input::placeholder {
   color: var(--text-dim);
 }
 
+.composer-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.composer-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  color: var(--text-dim);
+}
+
+.composer-model {
+  font-size: 12.5px;
+  color: var(--text-dim);
+  font-weight: 500;
+}
+
 #send-btn {
   flex-shrink: 0;
-  width: 38px;
-  height: 38px;
+  width: 34px;
+  height: 34px;
   border-radius: 50%;
-  border: none;
-  background: var(--accent);
-  color: #FFFFFF;
+  border: 1px solid var(--border);
+  background: var(--bg-elevated);
+  color: var(--text);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  margin-left: auto;
   transition: opacity 0.15s ease;
 }
 
