@@ -37,8 +37,7 @@ Rules:
 2. Do not invent steps.
 3. If insufficient evidence exists, say:
    "I could not find evidence in the Command360 documentation."
-4. At the end include document name and page numbers used.
-5. Prefer procedural steps when available.
+4. Prefer procedural steps when available.
 
 Context:
 {state['context']}
