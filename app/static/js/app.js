@@ -90,22 +90,6 @@ function escapeHtml(str) {
   return div.innerHTML;
 }
 
-// The model appends a trailing citation line in a format that varies between calls
-// (e.g. "Reference:", "Document Name: ... Page Numbers Used: ...", sometimes quoted) -
-// split it out so it can be styled distinctly from the main answer body.
-function splitCitationBlock(text) {
-  const match = text.match(/\n{1,2}["'“]*\s*(reference:|document name:?)[\s\S]*$/i);
-
-  if (!match) {
-    return { body: text, citation: null };
-  }
-
-  return {
-    body: text.slice(0, match.index).trim(),
-    citation: text.slice(match.index).trim().replace(/^["'“]+|["'”]+$/g, ""),
-  };
-}
-
 async function askQuestion(question) {
   removeEmptyState();
   addMessage("user", escapeHtml(question));
@@ -128,13 +112,8 @@ async function askQuestion(question) {
       return;
     }
 
-    const { body, citation } = splitCitationBlock(data.answer || "");
-    const answerHtml = marked.parse(body);
-    const citationHtml = citation
-      ? `<div class="answer-citation">${marked.parse(citation)}</div>`
-      : "";
-
-    typingBubble.innerHTML = answerHtml + citationHtml + formatSources(data.sources);
+    const answerHtml = marked.parse(data.answer || "");
+    typingBubble.innerHTML = answerHtml + formatSources(data.sources);
   } catch (err) {
     typingBubble.innerHTML = `<span class="error-text">Failed to reach the assistant. Please try again.</span>`;
   } finally {
